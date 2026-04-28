@@ -1,0 +1,6 @@
+# Data processing
+pandas==2.2.2
+numpy==1.26.4
+
+# Notebook
+ipykernel==6.29.5
