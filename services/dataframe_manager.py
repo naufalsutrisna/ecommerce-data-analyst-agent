@@ -3,7 +3,6 @@ import numpy as np
 
 from config import DATA_DIR
 
-
 class DataFrameManager:
 
     def __init__(self):
@@ -35,12 +34,12 @@ class DataFrameManager:
         self._preprocess()
         
         self.tables = {
-            "orders_df": self.orders_df,
-            "customers_df": self.customers_df,
-            "products_df": self.products_df,
-            "order_items_df": self.order_items_df,
-            "payments_df": self.payments_df,
-            "sellers_df": self.sellers_df,
+            "orders": self.orders_df,
+            "customers": self.customers_df,
+            "products": self.products_df,
+            "order_items": self.order_items_df,
+            "payments": self.payments_df,
+            "sellers": self.sellers_df,
         }
 
     def _preprocess(self):
