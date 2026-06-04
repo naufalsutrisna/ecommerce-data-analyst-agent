@@ -1,14 +1,21 @@
 def generate_schema(df_manager):
 
-    schema = ""
+    schema = []
 
     for table_name, df in df_manager.tables.items():
 
-        schema += f"\n{table_name}\n"
-        schema += "-" * len(table_name) + "\n"
+        columns = []
 
-        schema += "\n".join(df.columns)
+        for col, dtype in df.dtypes.items():
+            columns.append(
+                f"{col} ({dtype})"
+            )
 
-        schema += "\n\n"
+        schema.append(f"""
+        Table: {table_name}
 
-    return schema
+        Columns:
+        {', '.join(columns)}
+        """)
+
+    return "\n".join(schema)
