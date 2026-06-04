@@ -1,5 +1,87 @@
 # 🛒 E-commerce Data Analyst Agent
 
+An AI-powered business analyst that allows users to ask natural language questions about the Olist Brazilian E-commerce dataset and receive data-driven insights.
+
+---
+
+## ✨ Features
+
+### Natural Language Analytics
+
+Ask questions in plain English:
+
+> How many unique customers are there in each state?
+
+> What are the top product categories by revenue?
+
+> Which sellers generate the highest sales?
+
+---
+
+### Text-to-SQL Generation
+
+The application uses an LLM to:
+
+1. Understand the user's business question
+2. Generate SQL queries automatically
+3. Execute queries against in-memory datasets
+
+Example:
+
+```sql
+SELECT
+    customer_state,
+    COUNT(DISTINCT customer_unique_id) AS unique_customers
+FROM customers
+GROUP BY customer_state;
+```
+
+---
+
+### DuckDB Query Engine
+
+Instead of requiring a database server, the project:
+
+- Loads CSV datasets into Pandas DataFrames
+- Registers DataFrames as SQL tables using DuckDB
+- Executes generated SQL queries directly on in-memory data
+
+---
+
+### AI-Generated Business Insights
+
+After executing SQL, the application automatically generates:
+
+- Executive Summary
+- Key Findings
+- Business Implications
+
+based on the query results.
+
+---
+
+### Interactive Chat Interface
+
+Built with Streamlit.
+
+Workflow:
+
+```text
+User Question
+      ↓
+LLM SQL Generator
+      ↓
+DuckDB Execution
+      ↓
+Query Result
+      ↓
+LLM Insight Generator
+      ↓
+Business Report
+```
+
+---
+
 ## 📊 Dataset
 
 This project uses the Brazilian E-commerce dataset from Olist:
@@ -21,6 +103,22 @@ data/
 ├── olist_products_dataset.csv
 ├── olist_sellers_dataset.csv
 └── ...
+```
+
+---
+
+## 🚀 Running the Application
+
+Start the Streamlit application:
+
+```bash
+python -m streamlit run app.py
+```
+
+Open:
+
+```text
+http://localhost:8501
 ```
 
 ---
@@ -69,7 +167,25 @@ pip install -r requirements.txt
 
 ---
 
-### 5. Deactivate Environment
+### 5. Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+OPENAI_API_KEY=your_api_key_here
+```
+
+---
+
+### 6. Run Application
+
+```bash
+python -m streamlit run app.py
+```
+
+---
+
+### 7. Deactivate Environment
 
 ```bash
 deactivate
