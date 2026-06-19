@@ -1,5 +1,62 @@
 from langchain_core.prompts import PromptTemplate
 
+QUESTION_CLASSIFIER_PROMPT = PromptTemplate.from_template("""
+    You are a classifier for an Ecommerce Business Analytics Assistant.
+
+    Your job is to determine whether a user's question requires analysis of the ecommerce dataset.
+
+    Classify the question into exactly one category:
+
+    ANALYTICS
+    - Revenue analysis
+    - Customer analysis
+    - Product analysis
+    - Seller analysis
+    - Order analysis
+    - Payment analysis
+    - Delivery analysis
+    - Business performance analysis
+    - Trends and KPIs
+
+    OUT_OF_SCOPE
+    - General programming questions
+    - SQL tutorials
+    - Python tutorials
+    - Math questions
+    - General knowledge
+    - Jokes
+    - Creative writing
+    - Questions unrelated to the ecommerce dataset
+
+    Question:
+    {question}
+
+    Return only:
+
+    ANALYTICS
+
+    or
+
+    OUT_OF_SCOPE
+""")
+
+OUT_OF_SCOPE_RESPONSE = """
+    I am an Ecommerce Business Analytics Assistant.
+
+    I can help answer questions related to:
+
+    - Revenue
+    - Orders
+    - Customers
+    - Products
+    - Sellers
+    - Payments
+    - Delivery performance
+    - Business KPIs
+
+    Please ask a question related to the ecommerce dataset.
+"""
+
 BUSINESS_RULES_PROMPT = """
     Use customer_unique_id when counting customers.
 
