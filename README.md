@@ -1,14 +1,16 @@
 # 🛒 E-commerce Data Analyst Agent
 
-An AI-powered business analyst that allows users to ask natural language questions about the Olist Brazilian E-commerce dataset and receive data-driven insights.
+An AI-powered business analytics chatbot that enables users to explore the Olist Brazilian E-commerce dataset using natural language.
+
+The application automatically converts business questions into SQL, executes queries using DuckDB, and generates executive-level business insights.
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-### Natural Language Analytics
+## Natural Language Business Analytics
 
-Ask questions in plain English:
+Ask business questions in plain English:
 
 > How many unique customers are there in each state?
 
@@ -16,15 +18,36 @@ Ask questions in plain English:
 
 > Which sellers generate the highest sales?
 
+> What payment methods contribute the most revenue?
+
 ---
 
-### Text-to-SQL Generation
+## Business Analytics Scope Validation
 
-The application uses an LLM to:
+The chatbot is restricted to business analytics questions.
 
-1. Understand the user's business question
-2. Generate SQL queries automatically
-3. Execute queries against in-memory datasets
+Questions unrelated to the ecommerce dataset are automatically rejected to prevent hallucinations and misuse.
+
+Examples:
+
+✅ Top 10 product categories by revenue
+
+✅ Revenue by state
+
+❌ How do SQL JOINs work?
+
+❌ Write a Python function
+
+---
+
+## AI-Powered Text-to-SQL
+
+The application uses Large Language Models (LLMs) to:
+
+1. Understand business questions
+2. Generate SQL queries
+3. Validate business rules
+4. Execute analytics queries
 
 Example:
 
@@ -32,70 +55,124 @@ Example:
 SELECT
     customer_state,
     COUNT(DISTINCT customer_unique_id) AS unique_customers
-FROM customers
+FROM customers_df
 GROUP BY customer_state;
 ```
 
 ---
 
-### DuckDB Query Engine
+## DuckDB Query Engine
 
-Instead of requiring a database server, the project:
+The project does not require a dedicated database server.
 
-- Loads CSV datasets into Pandas DataFrames
-- Registers DataFrames as SQL tables using DuckDB
-- Executes generated SQL queries directly on in-memory data
+Workflow:
 
----
+* Load CSV files into Pandas DataFrames
+* Register DataFrames as DuckDB tables
+* Execute generated SQL directly on in-memory datasets
 
-### AI-Generated Business Insights
+Benefits:
 
-After executing SQL, the application automatically generates:
-
-- Executive Summary
-- Key Findings
-- Business Implications
-
-based on the query results.
+* Lightweight
+* Fast
+* Easy local deployment
+* No database setup required
 
 ---
 
-### Interactive Chat Interface
+## AI-Generated Business Insights
 
-Built with Streamlit.
+After query execution, the application automatically generates:
+
+* Executive Summary
+* Key Findings
+* Business Implications
+
+using an LLM-based business analyst agent.
+
+---
+
+## Interactive Chat Interface
+
+Built using Streamlit.
 
 Workflow:
 
 ```text
 User Question
       ↓
-LLM SQL Generator
+Question Classifier
+      ↓
+SQL Generator
       ↓
 DuckDB Execution
       ↓
 Query Result
       ↓
-LLM Insight Generator
+Insight Generator
       ↓
 Business Report
 ```
 
 ---
 
-## 📊 Dataset
+## Data Quality & Preprocessing
 
-This project uses the Brazilian E-commerce dataset from Olist:
+The application automatically performs preprocessing before analysis:
 
-👉 https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce/
+* Remove invalid delivered orders
+* Handle missing product categories
+* Create data quality indicators
+* Flag products with missing catalog information
+* Flag products with missing dimensions
 
-### Instructions:
+This ensures more reliable business insights.
 
-* Download the dataset manually from Kaggle
-* Extract all `.csv` files into the `data/` folder
+---
 
-Expected structure:
+# 🏗️ Architecture
 
-```bash
+```text
+Streamlit UI
+      ↓
+Question Classifier
+      ↓
+SQL Generation Agent
+      ↓
+DuckDB Query Engine
+      ↓
+Insight Generation Agent
+      ↓
+Business Report
+```
+
+Technologies:
+
+* Python
+* Streamlit
+* Pandas
+* DuckDB
+* LangChain
+* OpenRouter
+* GPT-OSS Models
+
+---
+
+# 📊 Dataset
+
+This project uses the Brazilian E-commerce dataset from Olist.
+
+Dataset:
+
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
+## Setup Dataset
+
+Download the dataset manually from Kaggle.
+
+Extract all CSV files into:
+
+```text
 data/
 ├── olist_orders_dataset.csv
 ├── olist_customers_dataset.csv
@@ -107,12 +184,76 @@ data/
 
 ---
 
-## 🚀 Running the Application
+# 🚀 Local Setup
 
-Start the Streamlit application:
+## 1. Clone Repository
 
 ```bash
-python -m streamlit run app.py
+git clone https://github.com/naufalsutrisna/ecommerce-data-analyst-agent.git
+
+cd ecommerce-data-analyst-agent
+```
+
+---
+
+## 2. Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+---
+
+## 3. Activate Environment
+
+### macOS / Linux
+
+```bash
+source .venv/bin/activate
+```
+
+### Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+---
+
+## 4. Install Dependencies
+
+```bash
+pip install --upgrade pip
+
+pip install -r requirements.txt
+```
+
+---
+
+## 5. Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+OPENROUTER_API_KEY=
+
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+
+OPENROUTER_SMALL_MODEL=openai/gpt-oss-20b:free
+OPENROUTER_LARGE_MODEL=openai/gpt-oss-120b:free
+
+TEMPERATURE=0
+MAX_TOKEN=2000
+
+MAX_INSIGHT_ROWS=50
+```
+
+---
+
+## 6. Run Application
+
+```bash
+streamlit run app.py
 ```
 
 Open:
@@ -123,72 +264,51 @@ http://localhost:8501
 
 ---
 
-## 🚀 Setup Instructions
+# 🐳 Docker
 
-### 1. Clone Repository
+Build image:
 
 ```bash
-git clone https://github.com/naufalsutrisna/ecommerce-data-analyst-agent.git
-cd ecommerce-data-analyst-agent
+docker build -t ecommerce-data-analyst-agent .
+```
+
+Run container:
+
+```bash
+docker run \
+-p 8501:8501 \
+--env-file .env \
+ecommerce-data-analyst-agent
+```
+
+Open:
+
+```text
+http://localhost:8501
 ```
 
 ---
 
-### 2. Create Virtual Environment
+# 📁 Project Structure
 
-```bash
-python -m venv .venv
+```text
+ecommerce-data-analyst-agent/
+│
+├── app.py
+├── config.py
+├── requirements.txt
+├── Dockerfile
+│
+├── data/
+│
+├── prompts/
+│
+├── services/
+│   ├── dataframe_manager.py
+│   ├── duckdb_manager.py
+│   ├── schema_generator.py
+│   ├── llm.py
+│   └── prompts.py
+│
+└── tests/
 ```
-
----
-
-### 3. Activate Virtual Environment
-
-#### macOS / Linux
-
-```bash
-source .venv/bin/activate
-```
-
-#### Windows
-
-```bash
-.venv\Scripts\activate
-```
-
----
-
-### 4. Install Dependencies
-
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
----
-
-### 5. Configure Environment Variables
-
-Create a `.env` file:
-
-```env
-OPENAI_API_KEY=your_api_key_here
-```
-
----
-
-### 6. Run Application
-
-```bash
-python -m streamlit run app.py
-```
-
----
-
-### 7. Deactivate Environment
-
-```bash
-deactivate
-```
-
----
